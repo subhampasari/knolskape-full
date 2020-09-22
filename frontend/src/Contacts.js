@@ -6,6 +6,7 @@ import './Contacts.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import TopBar from './TopBar.js';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -34,8 +35,13 @@ class Contacts extends Component {
 					name = datum.title.$t;
 					if(datum["gd$email"])
 						email = datum["gd$email"][0].address;
+					else
+						email = "-";
+
 					if(datum["gd$phoneNumber"])
 						tel = datum["gd$phoneNumber"][0].$t;
+					else
+						tel = "-";
 
 					if(Object.keys(tel).length === 0) {
 						tel = null;
@@ -61,17 +67,19 @@ class Contacts extends Component {
 		let greyFont = { color: 'gray'};
 		return(
 			<div>
-				Google Contacts
+
+				<TopBar />
 				<div className="container">
 
 					<div style={blueColor}>
 						<h1>Contacts
 						<span style={smallerFont}> ( {this.state.numberOfContacts} )</span>
 						</h1>
+						<br />
 					</div>
 
 					    <ul style={{'listStyleType':'none', 'paddingLeft': '0'}}>
-					    	<li className="contactsList" style={{'border':'0px', 'height': '3rem'}}>
+					    	<li style={{'border':'0px', 'height': '2rem'}}>
 					    		<Container fluid="md">
 						    		<Row>
 					    				<Col md={1} lg={1}></Col>
@@ -87,17 +95,19 @@ class Contacts extends Component {
 					    	{this.state.contacts.map((item, i) => {
 						        return (
 						        	<li className="contactsList" key={i}>
-						        		<Container fluid="md">
-						            	<Row>
-						            		<Col md={1} lg={1}></Col>
-						            		<Col md={4} lg={4}>
-												<div className="circleAvatar"></div>
-						            			{item.name}
-						            		</Col>
-						              		<Col md={4} lg={4}>{item.email}</Col>
-						              		<Col md={2} lg={2}>{item.tel}</Col>
-						              		<Col md={1} lg={1}></Col>
-						            	</Row>
+						        		<Container fluid="md" style={{'height':'100%'}}>
+							            	<Row className="middle">
+							            		<Col md={1} lg={1}></Col>
+							            		<Col md={4} lg={4}>
+							            			<div className="middle">
+														<div className="circleAvatar"></div>
+							            				<div><b>{item.name}</b></div>
+							            			</div>
+							            		</Col>
+							              		<Col md={4} lg={4}>{item.email}</Col>
+							              		<Col md={2} lg={2}><b>{item.tel}</b></Col>
+							              		<Col md={1} lg={1}></Col>
+							            	</Row>
 						            	</Container>
 						            </li>
 						        );
