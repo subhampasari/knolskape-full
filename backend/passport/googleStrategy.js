@@ -1,4 +1,4 @@
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
+const GoogleStrategy = require('passport-google-oauth20')
 const passport = require('passport')
 const User = require("../models/user-model");
 const strategy = new GoogleStrategy(
@@ -35,19 +35,20 @@ const strategy = new GoogleStrategy(
 			}
 		}
 
-		console.log("User already Exists");
+		// console.log("User already Exists");
 		done(null, currentUser);
 	}
 )
 
 passport.serializeUser((user, done) => {
-	console.log(user);
+	// console.log(user);
 	done(null, user._id)
 });
 
 passport.deserializeUser(function(id, done) {
 	User.findById(id)
 		.then(user => {
+			console.log('Found user');
       		done(null, user);
     	})
     	.catch(e => {

@@ -1,0 +1,23 @@
+.contactsList {
+	height: 4rem;
+	border: 1px solid black;
+	margin-top: 10px; 
+	margin-bottom: 5px;
+	padding: 1rem;
+	border-radius: 0.5rem;
+}
+
+.circleAvatar {
+	width: 40px;
+	float: left;
+	height: 40px;
+	line-height: 500px;
+	border-radius: 50%;
+	margin-right: 1rem;
+	/*font-size: 50px;*/
+	border: 1px solid black;
+	text-align: center;
+	background: white;
+	margin-top: auto; 
+	margin-bottom: auto;
+}

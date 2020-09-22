@@ -9,7 +9,10 @@ const session = require("express-session");
 
 
 const PORT = 4000;
-
+app.all('/*', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    next();
+});
 
 const passport = require('./passport')
 const mongo_url = "mongodb://user:user123@ds023445.mlab.com:23445/google_users";
@@ -19,29 +22,44 @@ mongoose.connect(mongo_url, { useNewUrlParser: true, useUnifiedTopology: true },
 
 app.use(cookieParser());
 
+app.use(cookieSession({
+    maxAge: 24 * 60 * 60 * 1000, // One day in milliseconds
+    keys: ['randomstringhere']
+}));
+
 app.use(cors());
 app.use(bodyParser.json());
+
+
 
 
 app.use(session({ secret: 'anything'
 }));
 
+function loggedIn(req, res, next) {
+    if (req.user) {
+        next();
+    } else {
+        res.redirect('/auth/google');
+    }
+}
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/auth', require('./auth'))
-app.use('/googleData', require('./googleData'));
+app.use('/googleData', loggedIn, require('./googleData'));
 
-app.get('/', (req, res) => {
-	console.log(req.user)
+app.get('/', loggedIn, (req, res) => {
+	console.log("show user : ", req.user)
 	if(req.user)
 	{
-		res.send(req.session.accessToken);
+		res.redirect("http://localhost:3000/contacts?token=" + req.session.accessToken);
+		console.log('');
 	}
 	else
 	{
-		res.redirect('/auth/google');
+		res.send('signin');
 	}
 })
 
