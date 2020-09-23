@@ -1,6 +1,7 @@
 const GoogleStrategy = require('passport-google-oauth20')
 const passport = require('passport')
 const User = require("../models/user-model");
+const mongoose = require('mongoose');
 const strategy = new GoogleStrategy(
 	{
 		clientID: process.env.GOOGLE_CLIENT_ID,
@@ -11,47 +12,40 @@ const strategy = new GoogleStrategy(
 	
 	async function(req, token, tokenSecret, profile, done) {
 
-		console.log("token", token);
 		req.session.accessToken = token; 
-		const { name, id, photoUrl } = profile;
-		const currentUser = await User.findOne({
-			googleId: profile.id
-		});
-		console.log("token is ", token)
-		console.log("currentUser", currentUser);
-		if (!currentUser) {
-			const newUser = new User({
-				name: profile._json.name,
-				googleId: profile.id,
-				profileImageUrl: profile._json.picture,
-				email: profile._json.email
-			}).save();
-			if (newUser) {
-				console.log('Added to db ', newUser);
-			  	done(null, newUser);
-			  	return;
-			}
-		}
 
-		// console.log("User already Exists");
-		done(null, currentUser);
+		User.findOne({
+            googleID: profile.id
+        }).then((dbUserRecord, err) => {
+            if (dbUserRecord) {
+                done(null, dbUserRecord);
+            } else {
+                const newUser = new User({
+                    googleID: profile._id,
+                    name: profile.displayName,
+                    profileImageUrl: profile._json.picture,
+					email: profile._json.email
+                });
+
+                newUser.save().then((newUser) => {
+                    done(null, newUser);
+                });
+            }
+        }).catch(err => {
+            console.log(err);
+        });
 	}
 )
 
-passport.serializeUser((user, done) => {
-	// console.log(user);
-	done(null, user._id)
+passport.serializeUser(function(user, done) {
+    done(null, user._id);
 });
 
 passport.deserializeUser(function(id, done) {
-	User.findById(id)
-		.then(user => {
-			console.log('Found user');
-      		done(null, user);
-    	})
-    	.catch(e => {
-     		 done(new Error("Failed to deserialize an user"));
-    	});
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
 });
+
 
 module.exports = strategy

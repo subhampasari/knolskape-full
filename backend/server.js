@@ -14,7 +14,7 @@ const passport = require('./passport')
 const mongo_url = process.env.MONGO_URL;
 
 mongoose.connect(mongo_url, { useNewUrlParser: true, useUnifiedTopology: true }, () => {
-  console.log("connected to mongo db");
+  // console.log("connected to mongo db");
 });
 
 app.use(cookieParser('anything'));
@@ -41,11 +41,9 @@ app.use(passport.session());
 app.use('/auth', require('./auth'))
 
 app.get('/', loggedIn, (req, res) => {
-	console.log("show user : ", req.user)
 	if(req.user)
 	{
 		res.redirect(process.env.CLIENT_HOST + "/contacts?token=" + req.session.accessToken);
-		console.log('');
 	}
 	else
 	{
@@ -54,5 +52,5 @@ app.get('/', loggedIn, (req, res) => {
 })
 
 app.listen(PORT, function() {
-    console.log("Server is running on Port: " + PORT);
+    // console.log("Server is running on Port: " + PORT);
 });

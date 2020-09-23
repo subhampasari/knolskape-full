@@ -1,7 +1,6 @@
-import React, {Component , Fragment } from 'react';
+import React, {Component } from 'react';
 import axios from "axios";
 import queryString from 'query-string';
-import { useTable } from 'react-table';
 import './Contacts.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -32,7 +31,6 @@ class Contacts extends Component {
 		axios.get('https://www.google.com/m8/feeds/contacts/default/full?alt=json&oauth_token='+token+'&max-results=10000')
 			.then( res => {
 				let data = res.data.feed.entry;
-				console.log(data);
 
 				let contactsData = [];
 				data.forEach( datum => {
@@ -71,7 +69,6 @@ class Contacts extends Component {
 				return contactsData;
 			})
 			.then( contacts => {
-				console.log(contacts);
 				this.setState({contacts: contacts,
 								numberOfContacts: contacts.length});
 			})
@@ -80,7 +77,6 @@ class Contacts extends Component {
 
 	render() {
 		
-		let contacts = this.state.contacts;
 		let blueColor = { color: 'blue' };
 		let smallerFont = { fontSize: '2rem', fontWeight: 200 };
 		let greyFont = { color: 'gray'};
@@ -121,7 +117,7 @@ class Contacts extends Component {
 							            			<div className="middle">
 														<div className="circleAvatar" style={{'backgroundColor': item.background}}>
 															<span style={{'color' : 'white'}}>
-																{item.initials}
+																<b>{item.initials}</b>
 															</span>
 														</div>
 							            				<div style={{'paddingTop' : '0.6rem'}}><b>{item.name}</b></div>

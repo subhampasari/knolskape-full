@@ -1,8 +1,6 @@
 import React, {Component } from 'react';
-import Container from 'react-bootstrap/Container';
 import '@fortawesome/fontawesome-free/js/all.js';
 import './TopBar.css';
-import axios from "axios";
 import { Redirect } from "react-router-dom";
 
 class TopBar extends Component {
@@ -30,11 +28,19 @@ class TopBar extends Component {
 		})
 		.then( res => res.json())
 		.then( res => {
-			this.setState({
-				user_name: res.name,
-				user_email : res.email,
-				user_img : res.profileImageUrl
-			})
+			if(res.user === null) {
+				console.log("no user");
+				window.location.href = process.env.REACT_APP_API_HOST;
+				// this.setState({redirect : "/"});
+				return;
+			}
+			else {
+				this.setState({
+					user_name: res.name,
+					user_email : res.email,
+					user_img : res.profileImageUrl
+				})
+			}
 		})
 		.catch(err => {
 			console.log(err);
@@ -56,10 +62,8 @@ class TopBar extends Component {
 		})
 		.then(res => res.json() )
 		.then( res => {
-			console.log(res);
 			if(res.msg && res.msg === 'logging you out') {
-				// redirect to home page
-				this.setState({ redirect: "/" });
+				window.location.href = process.env.REACT_APP_API_HOST;
 				return res;
 			}
 		})
@@ -76,7 +80,7 @@ class TopBar extends Component {
 			<div className="topBar">
 					<div className="userDetails">
 						<div className="circleUserAvatar">
-							<img className="userImg" src={this.state.user_img} />
+							<img className="userImg" alt="" src={this.state.user_img} />
 						</div>
 						<div style={{'color': 'white', 'float': 'right', 'marginTop': '0.4rem'}}>
 							<span><b>{this.state.user_name}</b></span><br />
@@ -94,4 +98,5 @@ class TopBar extends Component {
 }
 
 
-export default TopBar
+export default TopBar;
+

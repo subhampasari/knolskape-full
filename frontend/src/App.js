@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
-import axios from "axios";
 import './App.css';
 import Contacts from './Contacts';
-import Cookies from 'js-cookie';
 import {
   BrowserRouter as Router,
-  Switch,
   Route,
-  Link
 } from "react-router-dom";
 
 require('dotenv').config()
@@ -17,21 +13,30 @@ class App extends Component {
 		super(props);
 		this.state = {
 			token: "",
-			hasToken: false
 		};
 	}
 
 	componentDidMount() {
-
+		fetch(process.env.REACT_APP_API_HOST + '/auth/user', {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+			credentials: 'include'
+		})
+		.then( res => res.json())
+		.then( res => {
+			if(res.user === null) {
+				window.location.href = process.env.REACT_APP_API_HOST;
+				return;
+			}
+		})
 	}
 
 	render() {
-		const isLoggedIn = this.state.hasToken;
 		return (
 			<div className="App">
-				<a href={process.env.REACT_APP_API_HOST}>Google Signin</a>
-			
-
 				<Router>
 					<Route path="/contacts" component={Contacts}></Route>
 		        </Router>
