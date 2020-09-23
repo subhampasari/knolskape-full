@@ -18,7 +18,8 @@ const strategy = new GoogleStrategy(
             googleID: profile.id
         }).then((dbUserRecord, err) => {
             if (dbUserRecord) {
-                done(null, dbUserRecord);
+                // done(null, dbUserRecord);
+                done(dbUserRecord, null);
             } else {
                 const newUser = new User({
                     googleID: profile._id,
