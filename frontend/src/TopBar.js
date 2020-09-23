@@ -16,7 +16,7 @@ class TopBar extends Component {
 		}
 	}
 
-	componentDidMount() {
+	componentWillMount() {
 
 		fetch(process.env.REACT_APP_API_HOST + '/auth/user', {
 			method: "GET",
