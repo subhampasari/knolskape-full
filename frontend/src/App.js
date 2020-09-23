@@ -10,6 +10,8 @@ import {
   Link
 } from "react-router-dom";
 
+require('dotenv').config()
+
 class App extends Component {
 	constructor(props) {
 		super(props);
@@ -27,7 +29,7 @@ class App extends Component {
 		const isLoggedIn = this.state.hasToken;
 		return (
 			<div className="App">
-				<a href="http://localhost:4000/">Google Signin</a>
+				<a href={process.env.REACT_APP_API_HOST}>Google Signin</a>
 			
 
 				<Router>

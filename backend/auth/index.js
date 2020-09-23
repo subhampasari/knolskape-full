@@ -12,7 +12,7 @@ router.get('/google', passport.authenticate('google', { scope: [
 router.get(
 	'/google/callback',
 	passport.authenticate('google', {
-		successRedirect: 'http://localhost:4000',
+		successRedirect: '/',
 		failureRedirect: '/google'
 	})
 )
@@ -23,21 +23,20 @@ router.get('/', (req, res) => {
 
 // this route is just used to get the user basic info
 router.get('/user', (req, res, next) => {
-	console.log('===== user!!======')
 	console.log(req.user)
 	if (req.user) {
-		return res.json({ user: req.user })
+		res.send(req.user);
 	} else {
-		return res.json({ user: null })
+		res.send({ user: null })
 	}
 })
 
 router.get('/logout', (req, res) => {
 	if (req.user) {
-		// req.session.destroy()
 		req.session = null;
 		res.clearCookie('connect.sid') // clean up!
-		return res.json({ msg: 'logging you out' })
+		console.log('logging out');
+		return res.send({ msg: 'logging you out' })
 	} else {
 		return res.json({ msg: 'no user to log out!' })
 	}

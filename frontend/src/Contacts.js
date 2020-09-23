@@ -24,6 +24,11 @@ class Contacts extends Component {
 		let params = queryString.parse(this.props.location.search)
 		const token = params.token;
 
+		function getRandomColor() {
+			let colors = ["#4287f5", "#ed5628", "#a38981", "#85786b", "#3d7d0f", "#1c3859", "#591c33"]
+			return colors[Math.floor(Math.random()*colors.length)]
+		}
+
 		axios.get('https://www.google.com/m8/feeds/contacts/default/full?alt=json&oauth_token='+token+'&max-results=10000')
 			.then( res => {
 				let data = res.data.feed.entry;
@@ -31,8 +36,11 @@ class Contacts extends Component {
 
 				let contactsData = [];
 				data.forEach( datum => {
-					let name, email, tel = {};
-					name = datum.title.$t;
+					let name, email, tel, initials = "";
+					if(datum.title.$t)
+						name = datum.title.$t;
+					else
+						name = '-';
 					if(datum["gd$email"])
 						email = datum["gd$email"][0].address;
 					else
@@ -47,7 +55,18 @@ class Contacts extends Component {
 						tel = null;
 					}
 
-					contactsData.push({name, email, tel});
+					if(name !== '-')
+					{
+						let nameArr = name.split(' ');
+						if(nameArr[0])
+							initials += nameArr[0][0];
+						if(nameArr[1])
+							initials += nameArr[1][0];
+					}
+
+					let background = getRandomColor();
+
+					contactsData.push({name, email, tel, initials, background});
 				});
 				return contactsData;
 			})
@@ -100,8 +119,12 @@ class Contacts extends Component {
 							            		<Col md={1} lg={1}></Col>
 							            		<Col md={4} lg={4}>
 							            			<div className="middle">
-														<div className="circleAvatar"></div>
-							            				<div><b>{item.name}</b></div>
+														<div className="circleAvatar" style={{'backgroundColor': item.background}}>
+															<span style={{'color' : 'white'}}>
+																{item.initials}
+															</span>
+														</div>
+							            				<div style={{'paddingTop' : '0.6rem'}}><b>{item.name}</b></div>
 							            			</div>
 							            		</Col>
 							              		<Col md={4} lg={4}>{item.email}</Col>
